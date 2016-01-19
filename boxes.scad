@@ -1,15 +1,16 @@
 thickness = 3;
 
-size_inner_x = 111;
-size_inner_y = 111 - thickness;
+box_screw_column_radious = 3;
+arduino_screw_column_radious = 6;
+arduino_screw_column_z = 6;
+
+//sizes
+size_inner_x = 111 + 2*box_screw_column_radious;
+size_inner_y = 111 + 2*box_screw_column_radious- thickness;
 size_z = 38;
 size_x = size_inner_x + thickness;
 size_y = size_inner_y + thickness;
 
-box_screw_column_radious = 3;
-
-arduino_screw_column_radious = 6;
-arduino_screw_column_z = 6;
 
 boundary_size_x = 60;
 relay_size_x = 70;
@@ -20,20 +21,25 @@ relay_box_x = 140;
 
 $fn = 40; 
 
+//translations
+dx_usb_port  = 15 + box_screw_column_radious;
+dx_jack_port = 53 + box_screw_column_radious;
+dx_ethernet  = 70 + box_screw_column_radious;
+
 
 module usb_port() {
-  translate([15, 0, arduino_screw_column_z])
+  translate([dx_usb_port , 0, arduino_screw_column_z])
     cube([13, thickness, 13], false);
 }
 	
 module jack_port(){
-  translate([53, thickness, 6.5 + arduino_screw_column_z])
+  translate([dx_jack_port, thickness, 6.5 + arduino_screw_column_z])
     rotate([90,00,0])
       cylinder(h = thickness + 1, r1 = 6.5, r2 = 6.5, center = false); 
 }
 
 module ethernet_port() {
-  translate([70, 0, arduino_screw_column_z])
+  translate([dx_ethernet, 0, arduino_screw_column_z])
     cube([19, thickness, 16], false);
 }
 
@@ -105,6 +111,16 @@ module relay_box() {
   }
 }
 
+module arduino_cover() {
+    translate([0, 0, 100]) {
+        difference() {
+            cube([size_x, size_y, size_z/2], false);
+            translate([thickness/2, thickness/2, thickness/2-10])
+                cube([size_inner_x, size_inner_y, size_z/2], false);
+        }
+    }
+}
+
 arduino_box();
 relay_box();
-
+arduino_cover();
