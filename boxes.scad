@@ -1,7 +1,7 @@
 thickness = 3;
 
 box_screw_column_radious = 3;
-arduino_screw_column_radious = 6;
+arduino_screw_column_radious = 3;
 arduino_screw_column_z = 6;
 
 //sizes
@@ -55,7 +55,11 @@ module relay_port() {
 }
 
 module box_screw_column() {
-  cylinder(h = size_z, r1 = box_screw_column_radious, r2 = box_screw_column_radious, center = false);
+  difference() {
+    cylinder(h = size_z , r1 = box_screw_column_radious, r2 =    box_screw_column_radious, center = false);
+    translate([0, 0, 0.01+2*size_z/3])
+        cylinder(h = size_z / 3, r1 = box_screw_column_radious /3, r2 =    box_screw_column_radious / 3, center = false);      
+  }
 }
 
 module box_screw_columns() {
@@ -70,16 +74,24 @@ module box_screw_columns() {
 }
 
 module arduino_screw_column() {
-  cylinder(h = arduino_screw_column_z, r1 = arduino_screw_column_radious, r2 = arduino_screw_column_radious, center = false);
+  difference() {  
+    cylinder(h = arduino_screw_column_z, r1 =   arduino_screw_column_radious, r2 = arduino_screw_column_radious , center = false);
+    translate([0, 0, 0.01+arduino_screw_column_z/2])
+        cylinder(h = arduino_screw_column_z / 2, r1 =   arduino_screw_column_radious/3, r2 = arduino_screw_column_radious/3 , center = false);      
+  }
 }
 
 module arduino_screw_columns() {
-  translate([10, 20, 0])
+  pos_x_first_screw = 0.9 + 2*box_screw_column_radious + thickness;
+  pos_y_first_screw = thickness + 14.4;
+  translate([pos_x_first_screw, pos_y_first_screw, 0])
     arduino_screw_column();
-  translate([20, 40, 0])
+  translate([pos_x_first_screw + 45.5, pos_y_first_screw, 0])
     arduino_screw_column();
-  translate([50, 60, 0])
+  translate([pos_x_first_screw, pos_y_first_screw + 79.1, 0])
     arduino_screw_column();
+translate([pos_x_first_screw + 45.5, pos_y_first_screw + 79.1, 0])
+    arduino_screw_column();    
 }
 
 module arduino_box() {
@@ -123,4 +135,4 @@ module arduino_cover() {
 
 arduino_box();
 relay_box();
-arduino_cover();
+//arduino_cover();
