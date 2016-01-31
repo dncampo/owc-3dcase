@@ -1,3 +1,5 @@
+DEBUG = 0;
+
 box_thickness = 3.0;
 
 box_screw_column_radious = 3.0;
@@ -12,7 +14,7 @@ real_screw_radio = 3.0 / 2.0; //given that the cylinder is drawn from its center
 //sizes
 size_inner_x = 116.0 + 2.0*box_screw_column_radious;
 size_inner_y = 118.0 + 2.0*box_screw_column_radious;
-size_z = 38.0;
+size_z = 40.0;
 size_x = size_inner_x + box_thickness;
 size_y = size_inner_y + box_thickness;
 arduino_width = 57.0;
@@ -40,6 +42,18 @@ z_size_jack_port = 12.8;
 
 dx_ethernet  = arduino_comp_baseline_x + arduino_width + 7.0;
 
+
+//display
+x_size_disp = 71.0;
+y_size_disp = 26.0;
+dx_disp = size_x/2 - x_size_disp/2;
+dy_disp = 11*y_size_disp / 4 ;
+
+//buttons
+x_size_buttons = 40.0;
+y_size_buttons = 10.0;
+dx_buttons = size_x/2 - x_size_buttons/2; 
+dy_buttons = 20*y_size_buttons/4;
 
 
 module usd_module(){
@@ -115,13 +129,17 @@ module arduino_screw_column() {
   difference() {  
     cylinder(h = arduino_screw_column_z , r1 =   arduino_screw_column_radious, r2 = arduino_screw_column_radious, center = false);
       
-    // screw hole  
-    /* for testing in 2D projection
-      #translate([0.0, 0.0, -3*arduino_screw_column_z/2.0]) 
-        cylinder(h = 4*arduino_screw_column_z / 2.0 + box_thickness, r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);      
-      */
-    #translate([0.0, 0.0, arduino_screw_column_z/2.0]) 
-        cylinder(h = arduino_screw_column_z /2 , r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);            
+    // screw hole        
+    // for testing in 2D projection
+      if (DEBUG) {
+        #translate([0.0, 0.0, -3*arduino_screw_column_z/2.0]) 
+            cylinder(h = 4*arduino_screw_column_z / 2.0 + box_thickness, r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);      
+      }
+      else {
+          translate([0.0, 0.0, arduino_screw_column_z/2.0]) 
+            cylinder(h = arduino_screw_column_z /2 , r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);            
+      
+      }
   }
 }
 
@@ -223,21 +241,107 @@ module relay_box() {
   }
 }
 
+module display_screws (cover_z_size){
+    dx_screw_1 = dx_disp - 3.5;
+    dy_screw_1 = dy_disp - 5.5;
+    x_separation = 77;
+    y_separation = 34;
+    
+    //rotate([0,180,0])
+    mirror([0,0,0]) {
+    translate([dx_screw_1, dy_screw_1, 21.3 - cover_z_size])
+        arduino_screw_column();
+    translate([dx_screw_1 + x_separation, dy_screw_1, 21.3-cover_z_size])
+        arduino_screw_column();    
+    translate([dx_screw_1 + x_separation, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+        arduino_screw_column();        
+    translate([dx_screw_1, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+        arduino_screw_column();                
+    }
+}
+
+module buttons_screws (cover_z_size){
+    dx_screw_1 = dx_buttons - 4.5;
+    dy_screw_1 = dy_buttons - 1.5;
+    x_separation = 50;
+    y_separation = 13;
+    
+    //rotate([0,180,0])
+    mirror([0,0,0]) {
+    translate([dx_screw_1, dy_screw_1, 21.3 - cover_z_size])
+        arduino_screw_column();
+    translate([dx_screw_1 + x_separation, dy_screw_1, 21.3-cover_z_size])
+        arduino_screw_column();    
+    translate([dx_screw_1 + x_separation, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+        arduino_screw_column();        
+    translate([dx_screw_1, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+        arduino_screw_column();                
+    }
+}
+
+module buttons(cover_z_size) {
+    translate([dx_buttons, dy_buttons,0])
+        cube([x_size_buttons, y_size_buttons, cover_z_size], false); 
+}
+
+module display(cover_z_size) {    
+    translate([dx_disp, dy_disp,0])
+        cube([x_size_disp, y_size_disp, cover_z_size], false); 
+
+}
+
+module cover_screw_column(cover_z_size) {
+  difference() {
+    cylinder(h = cover_z_size , r1 = box_screw_column_radious, r2 =    box_screw_column_radious, center = false);
+    translate([0.0, 0.0, 0.01+2.0*cover_z_size/3.0])
+        cylinder(h = cover_z_size / 3.0, r1 = box_screw_column_radious /3.0, r2 =    box_screw_column_radious / 3.0, center = false);      
+  }
+}
+
+module cover_screw_columns(cover_z_size) {
+  translate([box_thickness, box_thickness, -cover_z_size+0.1])
+    cover_screw_column(cover_z_size);
+  translate([size_x - box_thickness, box_thickness, -cover_z_size+0.1])
+    cover_screw_column(cover_z_size);
+  translate([size_x - box_thickness, size_y - box_thickness, -cover_z_size+0.1])
+    cover_screw_column(cover_z_size);
+  translate([box_thickness, size_y - box_thickness, -cover_z_size+0.1])
+    cover_screw_column(cover_z_size);
+}
+
+
 module arduino_cover() {
-    translate([0, 0, size_z+1]) {
+    cover_z_size = 20;
+    translate([0, 0, 0]) {
         difference() {
-            cube([size_x, size_y, size_z/2.0], false);
-            translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0-10.0])
-                cube([size_inner_x, size_inner_y, size_z/2.0], false);
+            cube([size_x, size_y, cover_z_size], false);
+            translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
+                cube([size_inner_x, size_inner_y, cover_z_size], false);
+            display(cover_z_size);
+            buttons(cover_z_size);
         }
     }
+         
+    if (DEBUG) {
+            display(cover_z_size);
+            buttons(cover_z_size);
+    }
+    
+    display_screws(cover_z_size);
+    buttons_screws(cover_z_size);
+    mirror([0,0, 1]) cover_screw_columns(cover_z_size);
 }
 
 //projection() {arduino_box();}
 arduino_box();
 //relay_box();
-//arduino_cover();
-
+//projection() {
+translate([150,0,0]) {
+rotate([0,0,0]){
+    arduino_cover();
+}
+}
+//}
 
 
 
