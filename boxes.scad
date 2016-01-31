@@ -34,8 +34,8 @@ dx_usb_port  = 9.5 + arduino_comp_baseline_x;
 x_size_usb_port = 14.5;
 z_size_usb_port = 13.2;
 
-dx_jack_port = dx_usb_port + x_size_usb_port + 17.2;
-x_size_jack_port = 11.1;
+dx_jack_port = dx_usb_port + x_size_usb_port + 16.2;
+x_size_jack_port = 11.6;
 z_size_jack_port = 12.8;
 
 dx_ethernet  = arduino_comp_baseline_x + arduino_width + 7.0;
@@ -62,7 +62,7 @@ module jack_port(){
 }
 
 module ethernet_screw_columns() {
-  dx1 = arduino_comp_baseline_x + arduino_width + 1.7 + real_screw_radio;
+  dx1 = arduino_comp_baseline_x + arduino_width + 0.7 + real_screw_radio;
   dy1 = 1.0 + real_screw_radio + box_thickness;
   dx2 = dx1 + 27.5;
   dy2 = dy1 + 48.2;
@@ -116,16 +116,20 @@ module arduino_screw_column() {
     cylinder(h = arduino_screw_column_z , r1 =   arduino_screw_column_radious, r2 = arduino_screw_column_radious, center = false);
       
     // screw hole  
-    translate([0.0, 0.0, arduino_screw_column_z/2.0]) 
-        cylinder(h = arduino_screw_column_z / 2.0 + box_thickness, r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);      
+    /* for testing in 2D projection
+      #translate([0.0, 0.0, -3*arduino_screw_column_z/2.0]) 
+        cylinder(h = 4*arduino_screw_column_z / 2.0 + box_thickness, r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);      
+      */
+    #translate([0.0, 0.0, arduino_screw_column_z/2.0]) 
+        cylinder(h = arduino_screw_column_z /2 , r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);            
   }
 }
 
 module usd_screw_columns() {
     dx1 = arduino_comp_baseline_x + arduino_width + 1.7 + real_screw_radio;
-    dx2 = dx1 + 35.7;
+    dx2 = dx1 + 35.5;
     dy1 = arduino_comp_baseline_x + 55.6 + real_screw_radio;  
-    dy2 = dx1 + 39.0;
+    dy2 = dx1 + 37.0;
     
     translate([dx1 , dy1 , box_thickness])
         arduino_screw_column();
@@ -133,35 +137,35 @@ module usd_screw_columns() {
         arduino_screw_column();   
     translate([dx1 , dy2 , box_thickness])
         arduino_screw_column();    
-    translate([dx2 , dy2 , box_thickness])
+    translate([dx2 + 0.5, dy2 , box_thickness])
         arduino_screw_column();
     
 }
 
 module arduino_screw_columns() { 
   pos_x_first_screw = arduino_comp_baseline_x + 1.5 + real_screw_radio;
-  pos_y_first_screw = box_thickness + 15.2;
+  pos_y_first_screw = box_thickness + 14.6;
     
-  pos_x1_inner_screw = arduino_comp_baseline_x + 18.0 + real_screw_radio;
-  pos_x2_inner_screw = pos_x1_inner_screw + 25.0;
-  pos_y_inner_screw = arduino_comp_baseline_x + 61.0 + real_screw_radio;  
+  pos_x1_inner_screw = arduino_comp_baseline_x + 16.5 + real_screw_radio;
+  pos_x2_inner_screw = pos_x1_inner_screw + 28.3;
+  pos_y_inner_screw = arduino_comp_baseline_x + 58.0 + real_screw_radio;  
     
-  screws_x_distance = 47.5;  
-  screws_y1_distance = 75.5;
-  screws_y2_distance = 81.1;
+  screws_x_distance = 47.7;  
+  screws_y1_distance = 75.0;
+  screws_y2_distance = 80.5;
   
     
   translate([pos_x_first_screw, pos_y_first_screw, box_thickness])
     arduino_screw_column();
-  translate([pos_x_first_screw + screws_x_distance, pos_y_first_screw, box_thickness])
+  translate([pos_x_first_screw + screws_x_distance, pos_y_first_screw- 1.0, box_thickness])
     arduino_screw_column();
-  translate([pos_x_first_screw, pos_y_first_screw + screws_y1_distance, box_thickness])
+  translate([pos_x_first_screw + 1.0, pos_y_first_screw + screws_y1_distance, box_thickness])
     arduino_screw_column();
-translate([pos_x_first_screw + screws_x_distance, pos_y_first_screw + screws_y2_distance, box_thickness])
+translate([pos_x_first_screw + screws_x_distance + 1.0, pos_y_first_screw + screws_y2_distance, box_thickness])
     arduino_screw_column();    
 translate([pos_x1_inner_screw, pos_y_inner_screw, box_thickness])
     arduino_screw_column();    
-translate([pos_x2_inner_screw, pos_y_inner_screw, box_thickness])
+translate([pos_x2_inner_screw+0.35, pos_y_inner_screw, box_thickness])
     arduino_screw_column();
     
     //ethernet_screws
@@ -184,16 +188,18 @@ module arduino_box() {
     // "breathing"s holes  
     translate([18,4,0])
         cube([35,22,2*box_thickness], false);      
-    translate([15,25,0])
-        cube([47,40,2*box_thickness], false);
+    translate([15,23,0])
+        cube([47,39,2*box_thickness], false);
     translate([18,80,0])
         cube([35,40,2*box_thickness], false);
     translate([68,12,0])
         cube([50,35,2*box_thickness], false);        
-    translate([97.1,72,0])
+    translate([97.1,71,0])
         cube([24,30.5,2*box_thickness], false);              
     translate([75,60,0])
-        cube([23,60,2*box_thickness], false);              
+        cube([23,60,2*box_thickness], false);
+    
+      
   }
     
   
@@ -218,7 +224,7 @@ module relay_box() {
 }
 
 module arduino_cover() {
-    translate([0.0, 0.0, 100.0]) {
+    translate([0, 0, size_z+1]) {
         difference() {
             cube([size_x, size_y, size_z/2.0], false);
             translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0-10.0])
@@ -227,6 +233,7 @@ module arduino_cover() {
     }
 }
 
+//projection() {arduino_box();}
 arduino_box();
 //relay_box();
 //arduino_cover();
