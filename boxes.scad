@@ -20,12 +20,12 @@ size_y = size_inner_y + box_thickness;
 arduino_width = 57.0;
 arduino_length = 111.7;
 
-boundary_size_x = 60.0;
+boundary_size_x = 20.0;
 relay_size_x = 70.0;
 
 box_y = 0.0;
 arduino_box_x = 0.0;
-relay_box_x = 140.0;
+relay_box_x = 0.0;
 
 size_x_usd = 49.0;
 
@@ -54,6 +54,12 @@ x_size_buttons = 40.0;
 y_size_buttons = 10.0;
 dx_buttons = size_x/2 - x_size_buttons/2; 
 dy_buttons = 20*y_size_buttons/4;
+
+//relay
+relay_size_x = 64.0;
+relay_size_z = 8.5;
+relay_pos_x  = size_x - relay_size_x - box_screw_column_radious - box_thickness;
+relay_pos_z  = size_z - relay_size_z;
 
 
 module usd_module(){
@@ -95,15 +101,12 @@ module ethernet_port() {
     cube([16.8, box_thickness, 14.3], false);
 }
 
-module boundary_port(origin_x) {
-  translate([origin_x, (size_y - boundary_size_x) / 2.0, 5.0])
-    rotate([0.0, 0.0, 90.0])
-      cube([boundary_size_x, box_thickness + 10.0, 16.0], false);
-}
+
 
 module relay_port() {
-  translate([(size_y - boundary_size_x) / 2.0, 0.0, arduino_screw_column_z])
-    cube([relay_size_x, box_thickness, 16.0], false);
+
+  translate([relay_pos_x, 0.0, relay_pos_z ])
+    cube([relay_size_x, box_thickness, relay_size_z], false);
 }
 
 module box_screw_column() {
@@ -227,17 +230,47 @@ module arduino_box() {
   
 }
 
+module relay_screw_columns() {
+    pos_x1_first_screw = 31.0;
+    pos_y1_first_screw = 26.5;
+    
+    x_distance = 60.2 + real_screw_radio;
+    y_distance = 89.0 + real_screw_radio;
+    
+    pos_x2_first_screw = pos_x1_first_screw + x_distance;
+    pos_y2_first_screw = pos_y1_first_screw + y_distance;
+    
+    translate([pos_x1_first_screw, pos_y1_first_screw, box_thickness]) 
+        arduino_screw_column();        
+       
+    translate([pos_x2_first_screw, pos_y1_first_screw, box_thickness])
+        arduino_screw_column();    
+translate([pos_x1_first_screw, pos_y2_first_screw, box_thickness])
+        arduino_screw_column();            
+    translate([pos_x2_first_screw, pos_y2_first_screw, box_thickness])
+        arduino_screw_column();
+    
+    //interfase screws
+    translate([size_x/2, 7, 0]) 
+        cube([20, 7, relay_pos_z-1.5]);
+    translate([size_x - 25, 15, 0]) 
+        cube([20, 7, relay_pos_z-1.5]);        
+}
+
 module relay_box() {
   translate([relay_box_x, box_y, 0.0]) {
-    difference() {
-      cube([size_x, size_y, size_z], false);
-      translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
-        cube([size_inner_x, size_inner_y, size_z], false);    
-      boundary_port(box_thickness);
-      relay_port();
+      difference() {
+        difference() {
+          cube([size_x, size_y, size_z], false);
+          translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
+            cube([size_inner_x, size_inner_y, size_z], false);    
+          boundary_port(box_thickness);
+          relay_port();
+        }
+        breathing_holes();
     }
-    box_screw_columns()
-    arduino_screw_columns();
+    box_screw_columns();
+    relay_screw_columns();
   }
 }
 
@@ -299,13 +332,13 @@ module cover_screw_column(cover_z_size) {
 }
 
 module cover_screw_columns(cover_z_size) {
-  translate([box_thickness, box_thickness, -cover_z_size+0.1])
+  translate([box_thickness, box_thickness, -cover_z_size])
     cover_screw_column(cover_z_size);
-  translate([size_x - box_thickness, box_thickness, -cover_z_size+0.1])
+  translate([size_x - box_thickness, box_thickness, -cover_z_size])
     cover_screw_column(cover_z_size);
-  translate([size_x - box_thickness, size_y - box_thickness, -cover_z_size+0.1])
+  translate([size_x - box_thickness, size_y - box_thickness, -cover_z_size])
     cover_screw_column(cover_z_size);
-  translate([box_thickness, size_y - box_thickness, -cover_z_size+0.1])
+  translate([box_thickness, size_y - box_thickness, -cover_z_size])
     cover_screw_column(cover_z_size);
 }
 
@@ -332,17 +365,51 @@ module arduino_cover() {
     mirror([0,0, 1]) cover_screw_columns(cover_z_size);
 }
 
+module breathing_holes (){
+// "breathing"s holes  
+for (x = [box_thickness:10:size_x - box_thickness],
+    y = [4.0:5.0:23.0],
+    z = [0.0] )
+    translate([x,y*5.5-10.0,z]){ 
+        #cube([4.0, 22.0, box_thickness],0.0, false);
+    }    
+}
+
+module relay_cover() {
+    cover_z_size = 20;
+    difference() {
+        difference() {
+            cube([size_x, size_y, cover_z_size], false);
+            translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
+                cube([size_inner_x, size_inner_y, cover_z_size], false);    
+        }
+            breathing_holes();
+    }
+    
+    mirror([0,0, 1]) cover_screw_columns(cover_z_size);
+}
+
+module boundary_port(origin_x) {
+  translate([origin_x, (size_y - boundary_size_x) / 2.0, 5.0])
+    rotate([0.0, 0.0, 90.0])
+      cube([boundary_size_x, box_thickness + 10.0, 9.0], false);
+}
+
 //projection() {arduino_box();}
 arduino_box();
-//relay_box();
+
 //projection() {
-translate([150,0,0]) {
-rotate([0,0,0]){
-    arduino_cover();
-}
+translate([0,150,0]) {
+    rotate([0,0,0]){
+        arduino_cover();
+    }
 }
 //}
 
+translate([150, 0, 0])
+    relay_box();
 
+translate([150, 150, 0])
+    relay_cover();
 
  
