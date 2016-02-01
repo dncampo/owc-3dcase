@@ -5,8 +5,8 @@ box_thickness = 3.0;
 box_screw_column_radious = 3.0;
 arduino_screw_column_radious = 4.0;
 arduino_thickness = 1.58; // pcb thickness in mm
-arduino_screw_column_z = 3.0; //this would be the new "floor"
-arduino_comp_baseline_z = box_thickness + arduino_screw_column_z + arduino_thickness; //components baseline
+arduino_screw_column_z = 5; //this would be the new "floor"
+arduino_comp_baseline_z = arduino_screw_column_z + arduino_thickness; //components baseline
 arduino_comp_baseline_x = box_thickness + 2*box_screw_column_radious;
 
 real_screw_radio = 3.0 / 2.0; //given that the cylinder is drawn from its center and the measures were made from the perimeter of the real hole, we need this adjustment factor
@@ -53,7 +53,7 @@ dy_disp = 11*y_size_disp / 4 ;
 x_size_buttons = 40.0;
 y_size_buttons = 10.0;
 dx_buttons = size_x/2 - x_size_buttons/2; 
-dy_buttons = 20*y_size_buttons/4;
+dy_buttons = 20*y_size_buttons/4 - 5;
 
 //relay
 relay_size_x = 64.0;
@@ -86,13 +86,13 @@ module ethernet_screw_columns() {
   dy1 = 1.0 + real_screw_radio + box_thickness;
   dx2 = dx1 + 27.5;
   dy2 = dy1 + 48.2;
-  translate([dx1, dy1, box_thickness])
+  translate([dx1, dy1, 0])
     arduino_screw_column();    
-  translate([dx2, dy1, box_thickness])
+  translate([dx2, dy1, 0])
     arduino_screw_column();        
-  translate([dx1, dy2, box_thickness])
+  translate([dx1, dy2, 0])
     arduino_screw_column();        
-  translate([dx2, dy2, box_thickness])
+  translate([dx2, dy2, 0])
     arduino_screw_column();        
 }
 
@@ -135,11 +135,11 @@ module arduino_screw_column() {
     // screw hole        
     // for testing in 2D projection
       if (DEBUG) {
-        #translate([0.0, 0.0, -3*arduino_screw_column_z/2.0]) 
+        translate([0.0, 0.0, -3*arduino_screw_column_z/2.0]) 
             cylinder(h = 4*arduino_screw_column_z / 2.0 + box_thickness, r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);      
       }
       else {
-          translate([0.0, 0.0, arduino_screw_column_z/2.0]) 
+          translate([0.0, 0.0, arduino_screw_column_z/1.5]) 
             cylinder(h = arduino_screw_column_z /2 , r1 =   arduino_screw_column_radious/3.0, r2 = arduino_screw_column_radious/3.0 , center = false);            
       
       }
@@ -152,13 +152,13 @@ module usd_screw_columns() {
     dy1 = arduino_comp_baseline_x + 55.6 + real_screw_radio;  
     dy2 = dx1 + 37.0;
     
-    translate([dx1 , dy1 , box_thickness])
+    translate([dx1 , dy1 , 0])
         arduino_screw_column();
-    translate([dx2 , dy1 , box_thickness])
+    translate([dx2 , dy1 , 0])
         arduino_screw_column();   
-    translate([dx1 , dy2 , box_thickness])
+    translate([dx1 , dy2 , 0])
         arduino_screw_column();    
-    translate([dx2 + 0.5, dy2 , box_thickness])
+    translate([dx2 + 0.5, dy2 , 0])
         arduino_screw_column();
     
 }
@@ -176,17 +176,17 @@ module arduino_screw_columns() {
   screws_y2_distance = 80.5;
   
     
-  translate([pos_x_first_screw, pos_y_first_screw, box_thickness])
+  translate([pos_x_first_screw, pos_y_first_screw, 0])
     arduino_screw_column();
-  translate([pos_x_first_screw + screws_x_distance, pos_y_first_screw- 1.0, box_thickness])
+  translate([pos_x_first_screw + screws_x_distance, pos_y_first_screw- 1.0, 0])
     arduino_screw_column();
-  translate([pos_x_first_screw + 1.0, pos_y_first_screw + screws_y1_distance, box_thickness])
+  translate([pos_x_first_screw + 1.0, pos_y_first_screw + screws_y1_distance, 0])
     arduino_screw_column();
-translate([pos_x_first_screw + screws_x_distance + 1.0, pos_y_first_screw + screws_y2_distance, box_thickness])
+translate([pos_x_first_screw + screws_x_distance + 1.0, pos_y_first_screw + screws_y2_distance, 0])
     arduino_screw_column();    
-translate([pos_x1_inner_screw, pos_y_inner_screw, box_thickness])
+translate([pos_x1_inner_screw, pos_y_inner_screw, 0])
     arduino_screw_column();    
-translate([pos_x2_inner_screw+0.35, pos_y_inner_screw, box_thickness])
+translate([pos_x2_inner_screw+0.35, pos_y_inner_screw, 0])
     arduino_screw_column();
     
     //ethernet_screws
@@ -240,14 +240,14 @@ module relay_screw_columns() {
     pos_x2_first_screw = pos_x1_first_screw + x_distance;
     pos_y2_first_screw = pos_y1_first_screw + y_distance;
     
-    translate([pos_x1_first_screw, pos_y1_first_screw, box_thickness]) 
+    translate([pos_x1_first_screw, pos_y1_first_screw, 0]) 
         arduino_screw_column();        
        
-    translate([pos_x2_first_screw, pos_y1_first_screw, box_thickness])
+    translate([pos_x2_first_screw, pos_y1_first_screw, 0])
         arduino_screw_column();    
-translate([pos_x1_first_screw, pos_y2_first_screw, box_thickness])
+translate([pos_x1_first_screw, pos_y2_first_screw, 0])
         arduino_screw_column();            
-    translate([pos_x2_first_screw, pos_y2_first_screw, box_thickness])
+    translate([pos_x2_first_screw, pos_y2_first_screw, 0])
         arduino_screw_column();
     
     //interfase screws
@@ -275,10 +275,10 @@ module relay_box() {
 }
 
 module display_screws (cover_z_size){
-    dx_screw_1 = dx_disp - 3.5;
-    dy_screw_1 = dy_disp - 5.5;
-    x_separation = 77;
-    y_separation = 34;
+    dx_screw_1 = dx_disp - 3.0;
+    dy_screw_1 = dy_disp - 7.0;
+    x_separation = 76;
+    y_separation = 37.6;
     
     //rotate([0,180,0])
     mirror([0,0,0]) {
@@ -286,9 +286,9 @@ module display_screws (cover_z_size){
         arduino_screw_column();
     translate([dx_screw_1 + x_separation, dy_screw_1, 21.3-cover_z_size])
         arduino_screw_column();    
-    translate([dx_screw_1 + x_separation, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+    translate([dx_screw_1 + x_separation + 1.2, dy_screw_1 + y_separation - 1.0, 21.3 - cover_z_size])
         arduino_screw_column();        
-    translate([dx_screw_1, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+    translate([dx_screw_1-0.5, dy_screw_1 + y_separation, 21.3 - cover_z_size])
         arduino_screw_column();                
     }
 }
@@ -312,9 +312,16 @@ module buttons_screws (cover_z_size){
     }
 }
 
+// TO DO: Make an inner cylinder to make an low stamped effect
 module buttons(cover_z_size) {
-    translate([dx_buttons, dy_buttons,0])
-        cube([x_size_buttons, y_size_buttons, cover_z_size], false); 
+    translate([dx_buttons+5, dy_buttons+5,0])
+        difference()
+            cylinder(cover_z_size, y_size_buttons/2, y_size_buttons/2,true);
+    translate([dx_buttons+20, dy_buttons+5,0])
+        cylinder(cover_z_size, y_size_buttons/2, y_size_buttons/2,true);    
+    translate([dx_buttons+35, dy_buttons+5,0])
+        cylinder(cover_z_size, y_size_buttons/2, y_size_buttons/2,true);        
+        //cube([x_size_buttons, y_size_buttons, cover_z_size], false); 
 }
 
 module display(cover_z_size) {    
@@ -326,8 +333,8 @@ module display(cover_z_size) {
 module cover_screw_column(cover_z_size) {
   difference() {
     cylinder(h = cover_z_size , r1 = box_screw_column_radious, r2 =    box_screw_column_radious, center = false);
-    translate([0.0, 0.0, 0.01+2.0*cover_z_size/3.0])
-        cylinder(h = cover_z_size / 3.0, r1 = box_screw_column_radious /3.0, r2 =    box_screw_column_radious / 3.0, center = false);      
+    translate([0.0, 0.0, 0])
+        cylinder(h = cover_z_size, r1 = box_screw_column_radious /3.0, r2 =    box_screw_column_radious / 3.0, center = false);      
   }
 }
 
@@ -353,6 +360,7 @@ module arduino_cover() {
             display(cover_z_size);
             buttons(cover_z_size);
         }
+        
     }
          
     if (DEBUG) {
@@ -371,7 +379,7 @@ for (x = [box_thickness:10:size_x - box_thickness],
     y = [4.0:5.0:23.0],
     z = [0.0] )
     translate([x,y*5.5-10.0,z]){ 
-        #cube([4.0, 22.0, box_thickness],0.0, false);
+        cube([4.0, 22.0, box_thickness],0.0, false);
     }    
 }
 
