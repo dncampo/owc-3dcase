@@ -410,12 +410,14 @@ module arduino_cover() {
         }
         
         // REAL BUTTON
+        mirror([0,0,1]) {
         translate([0,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
             translate([0,0,-0.75])
                 cylinder(7.5, y_size_buttons/3 -0.2 , y_size_buttons/3 -0.05,true);
             translate([-5,-5,0]) cube([10,10,3]);
         }
+    }
 
          
     if (DEBUG) {
