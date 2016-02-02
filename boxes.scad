@@ -387,24 +387,24 @@ module arduino_cover() {
    
             
         }
-        translate([dx_buttons+5, dy_buttons+5,1]) {
+        translate([dx_buttons+5, dy_buttons+5,1.5]) {
             difference(){
-                cylinder(5, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
-                cylinder(5, y_size_buttons/3 , y_size_buttons/3 ,true);  
+                cylinder(3, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
+                cylinder(3, y_size_buttons/3 , y_size_buttons/3 ,true);  
         
             }           
         }        
-        translate([dx_buttons+20, dy_buttons+5,0.5]) {
+        translate([dx_buttons+20, dy_buttons+5,1.5]) {
             difference(){
-                cylinder(4, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
-                cylinder(4, y_size_buttons/3 , y_size_buttons/3 ,true);  
+                cylinder(3, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
+                cylinder(3, y_size_buttons/3 , y_size_buttons/3 ,true);  
         
             }           
         }
-        translate([dx_buttons+35, dy_buttons+5,1]) {
+        translate([dx_buttons+35, dy_buttons+5,1.5]) {
             difference(){
-                cylinder(5, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
-                cylinder(5, y_size_buttons/3 , y_size_buttons/3 ,true);  
+                cylinder(3, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
+                cylinder(3, y_size_buttons/3 , y_size_buttons/3 ,true);  
         
             }           
         }
