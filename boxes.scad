@@ -356,20 +356,20 @@ module display(cover_z_size) {
 module cover_screw_column(cover_z_size) {
   difference() {
     cylinder(h = cover_z_size , r1 = box_screw_column_radious, r2 =    box_screw_column_radious, center = false);
-    translate([0.0, 0.0, 0])
-        cylinder(h = cover_z_size, r1 = box_screw_column_radious /3.0, r2 =    box_screw_column_radious / 3.0, center = false);      
+    translate([0.0, 0.0, -1])
+        cylinder(h = 2.1*cover_z_size, r1 = box_screw_column_radious /3.0, r2 =    box_screw_column_radious / 3.0, center = false);      
   }
 }
 
 module cover_screw_columns(cover_z_size) {
-  translate([box_thickness, box_thickness, -cover_z_size])
-    cover_screw_column(cover_z_size);
-  translate([size_x - box_thickness, box_thickness, -cover_z_size])
-    cover_screw_column(cover_z_size);
-  translate([size_x - box_thickness, size_y - box_thickness, -cover_z_size])
-    cover_screw_column(cover_z_size);
-  translate([box_thickness, size_y - box_thickness, -cover_z_size])
-    cover_screw_column(cover_z_size);
+  translate([box_thickness, box_thickness, -box_thickness])
+    cover_screw_column(box_thickness);
+  translate([size_x - box_thickness, box_thickness, -box_thickness])
+    cover_screw_column(box_thickness);
+  translate([size_x - box_thickness, size_y - box_thickness, -box_thickness])
+    cover_screw_column(box_thickness);
+  translate([box_thickness, size_y - box_thickness, -box_thickness])
+    cover_screw_column(box_thickness);
 }
 
 
@@ -377,9 +377,9 @@ module arduino_cover() {
     cover_z_size = 20;
     translate([0, 0, 0]) {
         difference() {
-            cube([size_x, size_y, cover_z_size], false);
+            cube([size_x, size_y, box_thickness], false);
             translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
-                cube([size_inner_x, size_inner_y, cover_z_size], false);
+                cube([size_inner_x, size_inner_y, box_thickness], false);
             display(cover_z_size);
             buttons(cover_z_size);
         }
@@ -409,15 +409,34 @@ module arduino_cover() {
             }           
         }
         
-        // REAL BUTTON
+        // REAL BUTTON 3
+        mirror([0,0,1]) {
+        translate([-25,100,0]) 
+        translate([dx_buttons+20, dy_buttons+5,2.5]) {        
+            translate([0,0,-0.75])
+                cylinder(7.5, y_size_buttons/3 -0.4 , y_size_buttons/3 -0.4,true);
+            translate([-5,-5,0]) cube([10,10,3]);
+        }
+    }
+    
+        // REAL BUTTON 2
         mirror([0,0,1]) {
         translate([0,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
             translate([0,0,-0.75])
-                cylinder(7.5, y_size_buttons/3 -0.2 , y_size_buttons/3 -0.05,true);
+                cylinder(7.5, y_size_buttons/3 -0.2 , y_size_buttons/3 -0.2,true);
             translate([-5,-5,0]) cube([10,10,3]);
         }
     }
+    // REAL BUTTON 1
+        mirror([0,0,1]) {
+        translate([25,100,0]) 
+        translate([dx_buttons+20, dy_buttons+5,2.5]) {        
+            translate([0,0,-0.75])
+                cylinder(7.5, y_size_buttons/3 -0.1 , y_size_buttons/3 -0.1,true);
+            translate([-5,-5,0]) cube([10,10,3]);
+        }
+    }    
 
          
     if (DEBUG) {
@@ -444,9 +463,9 @@ module relay_cover() {
     cover_z_size = 20;
     difference() {
         difference() {
-            cube([size_x, size_y, cover_z_size], false);
+            cube([size_x, size_y, box_thickness], false);
             translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
-                cube([size_inner_x, size_inner_y, cover_z_size], false);    
+                cube([size_inner_x, size_inner_y, box_thickness], false);    
         }
             breathing_holes();
     }
