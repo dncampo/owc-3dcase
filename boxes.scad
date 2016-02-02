@@ -32,15 +32,16 @@ size_x_usd = 49.0;
 $fn = 80.0;
 
 //components
-dx_usb_port  = 9.5 + arduino_comp_baseline_x;
-x_size_usb_port = 14.5;
-z_size_usb_port = 13.2;
+dx_usb_port  = arduino_comp_baseline_x + 8.7;
+x_size_usb_port = 13.5;
+z_size_usb_port = 12.7;
 
-dx_jack_port = dx_usb_port + x_size_usb_port + 16.2;
-x_size_jack_port = 11.6;
-z_size_jack_port = 12.8;
 
-dx_ethernet  = arduino_comp_baseline_x + arduino_width + 7.0;
+dx_jack_port = 48.7;
+x_size_jack_port = 11.0;
+z_size_jack_port = 12.5;
+
+dx_ethernet  = 73.0;
 
 
 //display
@@ -75,10 +76,7 @@ module usb_port() {
 module jack_port(){
     translate([dx_jack_port, 0.0, arduino_comp_baseline_z])
     cube([x_size_jack_port, box_thickness, z_size_jack_port], false);  
-  //translate([dx_jack_port, box_thickness, 6.5 + arduino_screw_column_z])
-    
-    //rotate([90,00,0])      
-      //cylinder(h = box_thickness + 1, r1 = 6, r2 = 6, center = false); 
+
 }
 
 module ethernet_screw_columns() {
@@ -193,8 +191,24 @@ translate([pos_x2_inner_screw+0.35, pos_y_inner_screw, 0])
     ethernet_screw_columns();
 }
 
+module handle(){
+        difference() {
+          cube([15,15,6]);
+          translate([7.5,10,0])
+            cylinder(6,1,1);
+      }
+}
 
 module arduino_box() {
+  translate([size_x/15, size_y-2*box_thickness,0]){
+      handle();
+  
+  }
+  translate([size_x- size_x/15- 15, size_y-2*box_thickness,0])
+    handle();
+
+    
+    
   difference() {
       difference() {
         cube([size_x, size_y, size_z], false);
@@ -251,13 +265,21 @@ translate([pos_x1_first_screw, pos_y2_first_screw, 0])
         arduino_screw_column();
     
     //interfase screws
-    translate([size_x/2, 7, 0]) 
-        cube([20, 7, relay_pos_z-1.5]);
+    translate([size_x/2, 6, 0]) 
+        cube([25, 8, relay_pos_z-1.5]);
     translate([size_x - 25, 15, 0]) 
-        cube([20, 7, relay_pos_z-1.5]);        
+        cube([25, 8, relay_pos_z-1.5]);        
 }
 
 module relay_box() {
+  translate([size_x/15, size_y-2*box_thickness,0]){
+      handle();
+  
+  }
+  translate([size_x- size_x/15 - 15, size_y-2*box_thickness,0])
+    handle();
+
+  
   translate([relay_box_x, box_y, 0.0]) {
       difference() {
         difference() {
@@ -312,16 +334,17 @@ module buttons_screws (cover_z_size){
     }
 }
 
-// TO DO: Make an inner cylinder to make an low stamped effect
+
 module buttons(cover_z_size) {
     translate([dx_buttons+5, dy_buttons+5,0])
         difference()
-            cylinder(cover_z_size, y_size_buttons/2, y_size_buttons/2,true);
+            cylinder(cover_z_size, y_size_buttons/3, y_size_buttons/3,true);
     translate([dx_buttons+20, dy_buttons+5,0])
-        cylinder(cover_z_size, y_size_buttons/2, y_size_buttons/2,true);    
+        cylinder(cover_z_size, y_size_buttons/3, y_size_buttons/3,true);    
     translate([dx_buttons+35, dy_buttons+5,0])
-        cylinder(cover_z_size, y_size_buttons/2, y_size_buttons/2,true);        
+        cylinder(cover_z_size, y_size_buttons/3, y_size_buttons/3,true);        
         //cube([x_size_buttons, y_size_buttons, cover_z_size], false); 
+
 }
 
 module display(cover_z_size) {    
@@ -361,7 +384,39 @@ module arduino_cover() {
             buttons(cover_z_size);
         }
         
-    }
+   
+            
+        }
+        translate([dx_buttons+5, dy_buttons+5,1]) {
+            difference(){
+                cylinder(5, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
+                cylinder(5, y_size_buttons/3 , y_size_buttons/3 ,true);  
+        
+            }           
+        }        
+        translate([dx_buttons+20, dy_buttons+5,0.5]) {
+            difference(){
+                cylinder(4, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
+                cylinder(4, y_size_buttons/3 , y_size_buttons/3 ,true);  
+        
+            }           
+        }
+        translate([dx_buttons+35, dy_buttons+5,1]) {
+            difference(){
+                cylinder(5, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
+                cylinder(5, y_size_buttons/3 , y_size_buttons/3 ,true);  
+        
+            }           
+        }
+        
+        // REAL BUTTON
+        translate([0,100,0]) 
+        translate([dx_buttons+20, dy_buttons+5,2.5]) {        
+            translate([0,0,-0.75])
+                cylinder(7.5, y_size_buttons/3 -0.2 , y_size_buttons/3 -0.05,true);
+            translate([-5,-5,0]) cube([10,10,3]);
+        }
+
          
     if (DEBUG) {
             display(cover_z_size);
@@ -419,5 +474,6 @@ translate([150, 0, 0])
 
 translate([150, 150, 0])
     relay_cover();
+
 
  
