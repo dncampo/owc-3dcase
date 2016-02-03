@@ -103,8 +103,8 @@ module ethernet_port() {
 
 module relay_port() {
 
-  translate([relay_pos_x, 0.0, relay_pos_z ])
-    cube([relay_size_x, box_thickness, relay_size_z], false);
+  translate([relay_pos_x, 0.0, relay_pos_z -2.0])
+    cube([relay_size_x, box_thickness, relay_size_z+2.0], false);
 }
 
 module box_screw_column() {
@@ -266,15 +266,14 @@ translate([pos_x1_first_screw, pos_y2_first_screw, 0])
     
     //interfase screws
     translate([size_x/2, 6, 0]) 
-        cube([25, 8, relay_pos_z-1.5]);
+        cube([25, 8, relay_pos_z-3.0]);
     translate([size_x - 25, 15, 0]) 
-        cube([25, 8, relay_pos_z-1.5]);        
+        cube([25, 8, relay_pos_z-3.0]);        
 }
 
 module relay_box() {
   translate([size_x/15, size_y-2*box_thickness,0]){
-      handle();
-  
+      handle();  
   }
   translate([size_x- size_x/15 - 15, size_y-2*box_thickness,0])
     handle();
@@ -306,11 +305,11 @@ module display_screws (cover_z_size){
     mirror([0,0,0]) {
     translate([dx_screw_1, dy_screw_1, 21.3 - cover_z_size])
         arduino_screw_column();
-    translate([dx_screw_1 + x_separation, dy_screw_1, 21.3-cover_z_size])
+    translate([dx_screw_1 + x_separation, dy_screw_1 +0.5, 21.3-cover_z_size])
         arduino_screw_column();    
-    translate([dx_screw_1 + x_separation + 1.2, dy_screw_1 + y_separation - 1.0, 21.3 - cover_z_size])
+    translate([dx_screw_1 + x_separation + 1.7, dy_screw_1 + y_separation - 1.0, 21.3 - cover_z_size])
         arduino_screw_column();        
-    translate([dx_screw_1-0.5, dy_screw_1 + y_separation, 21.3 - cover_z_size])
+    translate([dx_screw_1-1.0, dy_screw_1 + y_separation -0.6, 21.3 - cover_z_size])
         arduino_screw_column();                
     }
 }
@@ -348,8 +347,8 @@ module buttons(cover_z_size) {
 }
 
 module display(cover_z_size) {    
-    translate([dx_disp, dy_disp,0])
-        cube([x_size_disp, y_size_disp, cover_z_size], false); 
+    translate([dx_disp-0.5, dy_disp,0])
+        cube([x_size_disp+1, y_size_disp, cover_z_size], false); 
 
 }
 
@@ -413,8 +412,8 @@ module arduino_cover() {
         mirror([0,0,1]) {
         translate([-25,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
-            translate([0,0,-0.75])
-                cylinder(7.5, y_size_buttons/3 -0.4 , y_size_buttons/3 -0.4,true);
+            translate([0,0,-1.75])
+                cylinder(9.5, y_size_buttons/3 -0.4 , y_size_buttons/3 -0.6,true);
             translate([-5,-5,0]) cube([10,10,3]);
         }
     }
@@ -423,8 +422,8 @@ module arduino_cover() {
         mirror([0,0,1]) {
         translate([0,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
-            translate([0,0,-0.75])
-                cylinder(7.5, y_size_buttons/3 -0.2 , y_size_buttons/3 -0.2,true);
+            translate([0,0,-1.5])
+                cylinder(9.0, y_size_buttons/3 -0.2 , y_size_buttons/3 -0.55,true);
             translate([-5,-5,0]) cube([10,10,3]);
         }
     }
@@ -432,8 +431,8 @@ module arduino_cover() {
         mirror([0,0,1]) {
         translate([25,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
-            translate([0,0,-0.75])
-                cylinder(7.5, y_size_buttons/3 -0.1 , y_size_buttons/3 -0.1,true);
+            translate([0,0,-1.5])
+                cylinder(8.5, y_size_buttons/3 -0.1 , y_size_buttons/3 -0.5,true);
             translate([-5,-5,0]) cube([10,10,3]);
         }
     }    
