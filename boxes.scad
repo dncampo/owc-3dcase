@@ -54,7 +54,7 @@ dy_disp = 11*y_size_disp / 4 ;
 x_size_buttons = 40.0;
 y_size_buttons = 10.0;
 dx_buttons = size_x/2 - x_size_buttons/2; 
-dy_buttons = 20*y_size_buttons/4 - 5;
+dy_buttons = 20 + y_size_buttons;
 
 //relay
 relay_size_x = 64.0;
@@ -75,8 +75,13 @@ module usb_port() {
 	
 module jack_port(){
     translate([dx_jack_port, 0.0, arduino_comp_baseline_z])
-    cube([x_size_jack_port, box_thickness, z_size_jack_port], false);  
+        cube([x_size_jack_port, box_thickness, z_size_jack_port], false);  
 
+}
+
+module external_power_supply() {
+    translate([dx_jack_port+58, 0.0, arduino_comp_baseline_z])
+        cube([x_size_jack_port, box_thickness, z_size_jack_port], false);  
 }
 
 module ethernet_screw_columns() {
@@ -217,6 +222,7 @@ module arduino_box() {
           usb_port();
           jack_port();
         ethernet_port();
+        external_power_supply();
         boundary_port(arduino_box_x + size_x);
       }
     
@@ -228,7 +234,7 @@ module arduino_box() {
     translate([18,80,0])
         cube([35,40,2*box_thickness], false);
     translate([68,12,0])
-        cube([50,35,2*box_thickness], false);        
+        cube([35,35,2*box_thickness], false);        
     translate([97.1,71,0])
         cube([24,30.5,2*box_thickness], false);              
     translate([75,60,0])
@@ -335,15 +341,13 @@ module buttons_screws (cover_z_size){
 
 
 module buttons(cover_z_size) {
-    translate([dx_buttons+5, dy_buttons+5,0])
+    translate([dx_buttons+5, dy_buttons,0])
         difference()
             cylinder(cover_z_size, y_size_buttons/3, y_size_buttons/3,true);
-    translate([dx_buttons+20, dy_buttons+5,0])
+    translate([dx_buttons+20, dy_buttons,0])
         cylinder(cover_z_size, y_size_buttons/3, y_size_buttons/3,true);    
-    translate([dx_buttons+35, dy_buttons+5,0])
+    translate([dx_buttons+35, dy_buttons,0])
         cylinder(cover_z_size, y_size_buttons/3, y_size_buttons/3,true);        
-        //cube([x_size_buttons, y_size_buttons, cover_z_size], false); 
-
 }
 
 module display(cover_z_size) {    
@@ -354,20 +358,20 @@ module display(cover_z_size) {
 
 module cover_screw_column(cover_z_size) {
   difference() {
-    cylinder(h = cover_z_size , r1 = box_screw_column_radious, r2 =    box_screw_column_radious, center = false);
+    cylinder(h = cover_z_size+2.0 , r1 = box_screw_column_radious, r2 =    box_screw_column_radious, center = false);
     translate([0.0, 0.0, -1])
         cylinder(h = 2.1*cover_z_size, r1 = box_screw_column_radious /3.0, r2 =    box_screw_column_radious / 3.0, center = false);      
   }
 }
 
 module cover_screw_columns(cover_z_size) {
-  translate([box_thickness, box_thickness, -box_thickness])
+  translate([box_thickness, box_thickness, -box_thickness-2.0])
     cover_screw_column(box_thickness);
-  translate([size_x - box_thickness, box_thickness, -box_thickness])
+  translate([size_x - box_thickness, box_thickness, -box_thickness-2.0])
     cover_screw_column(box_thickness);
-  translate([size_x - box_thickness, size_y - box_thickness, -box_thickness])
+  translate([size_x - box_thickness, size_y - box_thickness, -box_thickness-2.0])
     cover_screw_column(box_thickness);
-  translate([box_thickness, size_y - box_thickness, -box_thickness])
+  translate([box_thickness, size_y - box_thickness, -box_thickness-2.0])
     cover_screw_column(box_thickness);
 }
 
@@ -376,9 +380,9 @@ module arduino_cover() {
     cover_z_size = 20;
     translate([0, 0, 0]) {
         difference() {
-            cube([size_x, size_y, box_thickness], false);
+            cube([size_x, size_y, box_thickness+2.0], false);
             translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
-                cube([size_inner_x, size_inner_y, box_thickness], false);
+                cube([size_inner_x, size_inner_y, box_thickness+2.0], false);
             display(cover_z_size);
             buttons(cover_z_size);
         }
@@ -386,21 +390,21 @@ module arduino_cover() {
    
             
         }
-        translate([dx_buttons+5, dy_buttons+5,1.5]) {
+        translate([dx_buttons+5, dy_buttons,1.5]) {
             difference(){
                 cylinder(3, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
                 cylinder(3, y_size_buttons/3 , y_size_buttons/3 ,true);  
         
             }           
         }        
-        translate([dx_buttons+20, dy_buttons+5,1.5]) {
+        translate([dx_buttons+20, dy_buttons,1.5]) {
             difference(){
                 cylinder(3, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
                 cylinder(3, y_size_buttons/3 , y_size_buttons/3 ,true);  
         
             }           
         }
-        translate([dx_buttons+35, dy_buttons+5,1.5]) {
+        translate([dx_buttons+35, dy_buttons,1.5]) {
             difference(){
                 cylinder(3, y_size_buttons/3 + 1, y_size_buttons/3 + 1,true);   
                 cylinder(3, y_size_buttons/3 , y_size_buttons/3 ,true);  
@@ -409,7 +413,7 @@ module arduino_cover() {
         }
         
         // REAL BUTTON 3
-        mirror([0,0,1]) {
+        *mirror([0,0,1]) {
         translate([-25,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
             translate([0,0,-1.75])
@@ -419,7 +423,7 @@ module arduino_cover() {
     }
     
         // REAL BUTTON 2
-        mirror([0,0,1]) {
+        *mirror([0,0,1]) {
         translate([0,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
             translate([0,0,-1.5])
@@ -428,7 +432,7 @@ module arduino_cover() {
         }
     }
     // REAL BUTTON 1
-        mirror([0,0,1]) {
+        *mirror([0,0,1]) {
         translate([25,100,0]) 
         translate([dx_buttons+20, dy_buttons+5,2.5]) {        
             translate([0,0,-1.5])
@@ -444,7 +448,7 @@ module arduino_cover() {
     }
     
     display_screws(cover_z_size);
-    buttons_screws(cover_z_size);
+    *buttons_screws(cover_z_size);
     mirror([0,0, 1]) cover_screw_columns(cover_z_size);
 }
 
@@ -462,9 +466,9 @@ module relay_cover() {
     cover_z_size = 20;
     difference() {
         difference() {
-            cube([size_x, size_y, box_thickness], false);
+            cube([size_x, size_y, box_thickness+2.0], false);
             translate([box_thickness/2.0, box_thickness/2.0, box_thickness/2.0])
-                cube([size_inner_x, size_inner_y, box_thickness], false);    
+                cube([size_inner_x, size_inner_y, box_thickness+2.0], false);    
         }
             breathing_holes();
     }
