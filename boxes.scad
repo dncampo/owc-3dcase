@@ -54,7 +54,7 @@ dy_disp = 11*y_size_disp / 4 ;
 x_size_buttons = 40.0;
 y_size_buttons = 10.0;
 dx_buttons = size_x/2 - x_size_buttons/2; 
-dy_buttons = 20 + y_size_buttons;
+dy_buttons = 20;
 
 //relay
 relay_size_x = 64.0;
